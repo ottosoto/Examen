@@ -2,19 +2,22 @@ from django.db import models
 from django.contrib import admin
 from django.utils import timezone
 
-class Platos(models.Model):
+class Plato(models.Model):
     nombre = models.CharField(max_length=100)
-    descripcion = models.CharField(max_length=100)
     def __str__(self):
         return self.nombre
 
-class Ventas(models.Model):
-    nombrecliente = models.CharField(max_length=100)
-    vendedor= models.ForeignKey('auth.user')
-    platos = models.ForeignKey(Platos)
+class Menu(models.Model):
+    nombre = models.CharField(max_length=100)
+    precio = models.CharField(max_length=100)
+    platos = models.ManyToManyField(Plato, through='Descripcion')
     def __str__(self):
-        return self.nombrecliente
+        return self.nombre
 
-class Menus (models.Model):
+class Descripcion (models.Model):
     plato = models.ForeignKey(Platos, on_delete=models.CASCADE)
-    venta = models.ForeignKey(Ventas, on_delete=models.CASCADE)
+    menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
+
+class DetalleInLine(admin.TabularInline):
+    model = Detalle
+    extra = 1
